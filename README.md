@@ -1,80 +1,61 @@
 # Force Focus
 
-A Chrome extension that enforces deep work by blocking distracting websites until you set a daily focus goal.
+A Chrome extension that enforces deep work by blocking websites until you set a daily focus goal.
 
 ## How It Works
 
-1. **Set Your Daily Goal** - Browser is blocked until you commit to a specific, measurable goal for the day
-2. **Work Without Distractions** - Only whitelisted sites are accessible while your goal is active
-3. **Stay Accountable** - Non-whitelisted sites show a blocking overlay reminding you of your goal
-4. **Complete & Unlock** - Mark your goal as complete to unlock free browsing
+1. **Set a Goal** - Enable focus mode by setting a specific goal (min 10 characters)
+2. **Browse Allowed Sites** - Only sites matching your whitelist patterns are accessible
+3. **Get Blocked** - Non-whitelisted sites show a full-screen overlay with your goal reminder
+4. **End Session** - Toggle off focus mode when you're done
 
 ## Features
 
-- **Daily Focus Lock** - Browser blocks everything until you set a goal
-- **Pattern-Based Whitelist** - Use glob patterns to allow specific domains and paths
-- **Smart Blocking Overlay** - Full-screen overlay on blocked sites with options to go back, add to whitelist, or mark goal complete
-- **Progress Tracking** - Track focus time, blocked attempts, and goal completion streaks
+- **Focus Mode Toggle** - Enable/disable blocking with a simple toggle
+- **Goal-Based Locking** - Must set a specific goal before focus mode activates
+- **Pattern-Based Whitelist** - Allow sites using glob patterns with wildcards (`*`, `**`)
+- **Blocking Overlay** - Full-screen modal on blocked sites with options to go back, allow the site, or end session
+- **Daily Auto-Reset** - Configurable reset time clears your goal daily
+- **Export/Import** - Backup and sync your configuration across devices
 
 ## Installation
 
-### From Source
-
 ```bash
-# Install dependencies
 bun install
-
-# Build the extension
 bun run build
 ```
 
-Then load in Chrome:
-1. Navigate to `chrome://extensions/`
+Load in Chrome:
+1. Go to `chrome://extensions/`
 2. Enable "Developer mode"
-3. Click "Load unpacked"
-4. Select the `dist` folder
+3. Click "Load unpacked" and select the `dist` folder
 
-### Development
+## Popup Interface
+
+**Focus Tab** - Set your daily goal and see current status
+
+**Sites Tab** - Manage allowed site patterns:
+- `github.com/*` - All GitHub pages
+- `*.google.com/*` - All Google subdomains
+- `localhost:*` - Any localhost port
+
+**Settings Tab** - Configure reset time, export/import config, reset extension
+
+## Blocking Overlay
+
+When you visit a blocked site, the overlay shows:
+- Your current focus goal
+- The blocked URL
+- Options: **Back to work**, **Allow in focus mode**, **End focus session**
+
+The "Allow in focus mode" option lets you quickly add the site with different pattern scopes (exact page, whole domain, subdomains, or path prefix).
+
+## Development
 
 ```bash
-# Run with hot reload
-bun run dev
-
-# Type check
-bun run type-check
+bun run dev      # Hot reload
+bun run build    # Production build
 ```
-
-## Whitelist Patterns
-
-Examples of glob patterns:
-
-| Pattern | Matches |
-|---------|---------|
-| `github.com/*` | All GitHub pages |
-| `*.stackoverflow.com` | Stack Overflow and subdomains |
-| `localhost:*` | Any localhost port |
-| `docs.google.com/*` | Google Docs |
-
-Default whitelist includes common developer tools (GitHub, Stack Overflow, MDN, localhost, etc.)
-
-## Project Structure
-
-```
-src/
-├── background/     # Service worker
-├── content/        # Blocking overlay (React)
-├── popup/          # Extension popup (React)
-├── shared/         # Shared types and utilities
-└── styles/         # Tailwind CSS
-```
-
-## Tech Stack
-
-- TypeScript
-- React 19
-- Tailwind CSS
-- Vite + CRXJS
-- Chrome Extension Manifest V3
 
 ## License
 
