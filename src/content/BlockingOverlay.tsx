@@ -22,7 +22,6 @@ interface BlockingOverlayProps {
   isLocked?: boolean;
   onGoBack: () => void;
   onAddToWhitelist: (option: 'exact' | 'domain' | 'domain-wildcard' | 'custom', customPattern?: string) => Promise<void>;
-  onCompleteGoal: () => Promise<void>;
   onSetGoal?: (goal: string) => Promise<void>;
 }
 
@@ -39,7 +38,6 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
   isLocked = false,
   onGoBack,
   onAddToWhitelist,
-  onCompleteGoal,
   onSetGoal,
 }) => {
   const [showWhitelistOptions, setShowWhitelistOptions] = useState(false);
@@ -109,12 +107,6 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
     setIsLoading(true);
     // Use 'custom' type and pass the pre-computed pattern
     await onAddToWhitelist('custom', option.pattern);
-    setIsLoading(false);
-  };
-
-  const handleCompleteGoal = async () => {
-    setIsLoading(true);
-    await onCompleteGoal();
     setIsLoading(false);
   };
 
@@ -296,13 +288,6 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
                 disabled={isLoading}
               >
                 Allow in focus mode
-              </button>
-              <button
-                onClick={handleCompleteGoal}
-                className="btn btn-ghost"
-                disabled={isLoading}
-              >
-                End focus session
               </button>
             </div>
           </div>

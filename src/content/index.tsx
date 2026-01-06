@@ -177,11 +177,6 @@ function showOverlay(goal?: string, isLocked: boolean = false): void {
         hideOverlay();
         window.location.reload();
       }}
-      onCompleteGoal={async () => {
-        await sendMessage('COMPLETE_GOAL');
-        hideOverlay();
-        window.location.reload();
-      }}
       onSetGoal={async (newGoal) => {
         await sendMessage('SET_GOAL', newGoal);
         hideOverlay();
