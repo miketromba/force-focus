@@ -297,7 +297,6 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
               >
                 Allow in focus mode
               </button>
-              <span className="action-divider">·</span>
               <button
                 onClick={handleCompleteGoal}
                 className="btn btn-ghost"
