@@ -1,112 +1,81 @@
-# Force Focus - Chrome Extension
+# Force Focus
 
 A Chrome extension that enforces deep work by blocking distracting websites until you set a daily focus goal.
 
+## How It Works
+
+1. **Set Your Daily Goal** - Browser is blocked until you commit to a specific, measurable goal for the day
+2. **Work Without Distractions** - Only whitelisted sites are accessible while your goal is active
+3. **Stay Accountable** - Non-whitelisted sites show a blocking overlay reminding you of your goal
+4. **Complete & Unlock** - Mark your goal as complete to unlock free browsing
+
 ## Features
 
-- **Daily Focus Lock**: Browser is blocked until you set a focus goal for the day
-- **Pattern-Based Whitelist**: Only allows access to websites matching your configured patterns
-- **Smart Blocking Overlay**: Shows a fullscreen overlay on blocked sites with options to:
-  - Go back to work
-  - Add the site to whitelist (if it's actually relevant)
-  - Mark your goal as complete
-- **Progress Tracking**: Track focus time, blocked attempts, and goal completion
-- **Customizable Patterns**: Use glob patterns to whitelist specific domains and paths
+- **Daily Focus Lock** - Browser blocks everything until you set a goal
+- **Pattern-Based Whitelist** - Use glob patterns to allow specific domains and paths
+- **Smart Blocking Overlay** - Full-screen overlay on blocked sites with options to go back, add to whitelist, or mark goal complete
+- **Progress Tracking** - Track focus time, blocked attempts, and goal completion streaks
 
 ## Installation
 
-### Development Setup
+### From Source
 
-1. Install dependencies:
 ```bash
+# Install dependencies
 bun install
-```
 
-2. Build the extension:
-```bash
+# Build the extension
 bun run build
 ```
 
-3. Load in Chrome:
-   - Open Chrome and navigate to `chrome://extensions/`
-   - Enable "Developer mode" in the top right
-   - Click "Load unpacked"
-   - Select the `dist` folder from this project
+Then load in Chrome:
+1. Navigate to `chrome://extensions/`
+2. Enable "Developer mode"
+3. Click "Load unpacked"
+4. Select the `dist` folder
 
-### Development Mode
+### Development
 
-Run in development mode with hot reload:
 ```bash
+# Run with hot reload
 bun run dev
+
+# Type check
+bun run type-check
 ```
 
-## Usage
+## Whitelist Patterns
 
-1. **Set Your Daily Goal**: Click the extension icon and set a specific, measurable goal for the day
-2. **Browse Freely**: Access whitelisted sites without interruption
-3. **Stay Focused**: Non-whitelisted sites show a blocking overlay
-4. **Track Progress**: View statistics on focus time and blocked attempts
-5. **Complete Goal**: Mark your goal as complete to unlock free browsing
+Examples of glob patterns:
 
-## Configuration
+| Pattern | Matches |
+|---------|---------|
+| `github.com/*` | All GitHub pages |
+| `*.stackoverflow.com` | Stack Overflow and subdomains |
+| `localhost:*` | Any localhost port |
+| `docs.google.com/*` | Google Docs |
 
-### Whitelist Patterns
-
-Examples of glob patterns you can use:
-- `github.com/*` - Allow all GitHub pages
-- `*.stackoverflow.com` - Allow Stack Overflow and all subdomains
-- `localhost:3000` - Allow local development server
-- `docs.google.com/*` - Allow Google Docs
-
-### Default Whitelisted Domains
-
-The extension comes with sensible defaults for developers:
-- `localhost:*`
-- `github.com/*`
-- `stackoverflow.com/*`
-- `developer.mozilla.org/*`
-- And more...
+Default whitelist includes common developer tools (GitHub, Stack Overflow, MDN, localhost, etc.)
 
 ## Project Structure
 
 ```
-force-focus/
-├── src/
-│   ├── background/     # Service worker (background script)
-│   ├── content/       # Content script with blocking overlay
-│   ├── popup/         # React popup interface
-│   ├── shared/        # Shared utilities and types
-│   └── styles/        # Global styles and Tailwind CSS
-├── public/
-│   └── icons/         # Extension icons
-├── manifest.json      # Chrome extension manifest
-└── dist/             # Built extension (generated)
+src/
+├── background/     # Service worker
+├── content/        # Blocking overlay (React)
+├── popup/          # Extension popup (React)
+├── shared/         # Shared types and utilities
+└── styles/         # Tailwind CSS
 ```
 
-## Technology Stack
+## Tech Stack
 
-- **Bun**: Runtime and package manager
-- **TypeScript**: Type safety throughout
-- **React 18**: Popup interface
-- **Vite**: Build tool with CRXJS plugin
-- **Tailwind CSS**: Styling
-- **Chrome Extension Manifest V3**: Latest extension architecture
-
-## Development
-
-### Type Checking
-```bash
-bun run type-check
-```
-
-### Building for Production
-```bash
-bun run build
-```
+- TypeScript
+- React 19
+- Tailwind CSS
+- Vite + CRXJS
+- Chrome Extension Manifest V3
 
 ## License
 
 MIT
-
----
-*This project was created using `bun init` in bun v1.3.3. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.*
