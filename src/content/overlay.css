@@ -1,0 +1,240 @@
+/* Overlay styles - scoped to shadow DOM */
+.overlay-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.overlay-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.overlay-content {
+  position: relative;
+  z-index: 1;
+  max-width: 500px;
+  width: 90%;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overlay-card {
+  background: #111827;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.5), 0 16px 32px -8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid #374151;
+}
+
+.overlay-header {
+  margin-bottom: 24px;
+}
+
+.overlay-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.goal-container {
+  background: #374151;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.goal-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.goal-text {
+  font-size: 16px;
+  color: white;
+  margin: 0;
+  font-weight: 500;
+}
+
+.blocked-url-container {
+  background: rgba(127, 29, 29, 0.3);
+  border: 1px solid #991b1b;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+}
+
+.blocked-url-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f87171;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.blocked-url {
+  font-size: 14px;
+  color: #fca5a5;
+  margin: 0;
+  word-break: break-all;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+.overlay-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.btn-secondary {
+  background: #374151;
+  color: #d1d5db;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #4b5563;
+}
+
+.btn-tertiary {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid #22c55e;
+}
+
+.btn-tertiary:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+.whitelist-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.whitelist-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d1d5db;
+  margin: 0 0 8px 0;
+}
+
+.btn-option {
+  background: #374151;
+  color: #d1d5db;
+  border: 1px solid #4b5563;
+  padding: 10px 16px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.btn-option:hover:not(:disabled) {
+  background: #4b5563;
+  border-color: #6b7280;
+}
+
+.custom-pattern-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.custom-pattern-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #4b5563;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  background: #374151;
+  color: white;
+}
+
+.custom-pattern-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #9ca3af;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  color: #d1d5db;
+}
+
+.loading-indicator {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  margin-top: 16px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

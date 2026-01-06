@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Force Focus</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 360px;
+      height: 480px;
+      overflow: hidden;
+      /* Default to dark to prevent flash when in focus mode */
+      background-color: #111827;
+    }
+    #root {
+      width: 100%;
+      height: 100%;
+    }
+    body.focus-inactive {
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // Set theme based on stored focus state BEFORE React loads
+    // We must wait for this before mounting React to prevent flash
+    window.__themeReady = new Promise((resolve) => {
+      chrome.storage.local.get(['focusEnabled'], (result) => {
+        if (result.focusEnabled) {
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.body.classList.add('focus-inactive');
+          document.documentElement.dataset.theme = 'light';
+        }
+        resolve();
+      });
+    });
+  </script>
+  <script type="module" src="./index.tsx"></script>
+</body>
+</html>
