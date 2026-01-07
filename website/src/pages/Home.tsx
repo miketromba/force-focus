@@ -22,7 +22,7 @@ export function Home() {
         </p>
         <div className="flex gap-4 justify-center flex-wrap items-center">
           <a
-            href="https://chrome.google.com/webstore"
+            href="https://chromewebstore.google.com/detail/force-focus/djpgkaodmkkepdljpnjojalgfoidlcja"
             className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl text-base font-semibold bg-white text-gray-900 hover:no-underline transition-all duration-200 shadow-lg shadow-white/20 hover:shadow-xl hover:shadow-white/30 hover:scale-105"
             target="_blank"
             rel="noopener"
@@ -121,7 +121,7 @@ export function Home() {
         </p>
         <div className="flex gap-4 justify-center flex-wrap items-center">
           <a
-            href="https://chrome.google.com/webstore"
+            href="https://chromewebstore.google.com/detail/force-focus/djpgkaodmkkepdljpnjojalgfoidlcja"
             className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl text-base font-semibold bg-white text-gray-900 hover:no-underline transition-all duration-200 shadow-lg shadow-white/20 hover:shadow-xl hover:shadow-white/30 hover:scale-105"
             target="_blank"
             rel="noopener"

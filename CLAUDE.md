@@ -15,6 +15,10 @@ alwaysApply: false
 ### Development Workflow
 - **Always run `bun run build` after making code changes** to rebuild the extension
 
+### Deployments
+- **NEVER run `vercel` CLI commands manually** - Vercel is connected to GitHub and deploys automatically on push to `main`
+- Just commit and push changes; the website will deploy automatically
+
 Default to using Bun instead of Node.js.
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
