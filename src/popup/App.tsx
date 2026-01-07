@@ -22,7 +22,7 @@ const App: React.FC = () => {
   // Use initial theme from DOM to prevent flash
   const [initialTheme] = useState(getInitialTheme);
 
-  // Once status loads, use that; otherwise use the initial theme from DOM
+  // Focus mode state - controls both toggle visual and theme
   const isFocusActive = status ? status.focusEnabled : initialTheme;
 
   useEffect(() => {
@@ -33,11 +33,6 @@ const App: React.FC = () => {
     try {
       const response = await sendMessage<void, StatusResponse>('GET_STATUS');
       setStatus(response);
-
-      // If no goal is set, force goal tab
-      if (!response.hasGoal) {
-        setActiveTab('goal');
-      }
     } catch (error) {
       console.error('Failed to load status:', error);
     } finally {
@@ -124,7 +119,6 @@ const App: React.FC = () => {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              disabled={status?.isLocked && tab.key !== 'goal'}
               className={`
                 flex-1 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors
                 ${activeTab === tab.key
@@ -134,10 +128,6 @@ const App: React.FC = () => {
                   : isFocusActive
                     ? 'border-transparent text-gray-400 hover:text-gray-300'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
-                }
-                ${status?.isLocked && tab.key !== 'goal'
-                  ? 'opacity-50 cursor-not-allowed'
-                  : ''
                 }
               `}
             >
@@ -154,13 +144,13 @@ const App: React.FC = () => {
             currentGoal={status?.goal}
             isLocked={status?.isLocked || false}
             goalCompleted={status?.goalCompleted || false}
-            isFocusActive={isFocusActive || false}
+            isFocusActive={isFocusActive}
             onGoalSet={handleGoalSet}
             onGoalComplete={handleGoalComplete}
           />
         )}
-        {activeTab === 'patterns' && <PatternManager isFocusActive={isFocusActive || false} />}
-        {activeTab === 'settings' && <Settings isFocusActive={isFocusActive || false} />}
+        {activeTab === 'patterns' && <PatternManager isFocusActive={isFocusActive} />}
+        {activeTab === 'settings' && <Settings isFocusActive={isFocusActive} />}
       </div>
     </div>
   );

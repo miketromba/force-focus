@@ -70,7 +70,13 @@ export async function initializeStorage(): Promise<void> {
 
     await setLocalStorage({
       patterns: defaultPatterns,
+      focusEnabled: true,
     });
+  }
+
+  // Ensure focusEnabled is set (for existing installs or after reset)
+  if (local.focusEnabled === undefined) {
+    await setLocalStorage({ focusEnabled: true });
   }
 
   // Initialize sync storage
@@ -82,25 +88,11 @@ export async function initializeStorage(): Promise<void> {
 }
 
 /**
- * Clear expired temporary patterns
+ * Reset focus session - clears goal and enables focus mode
  */
-export async function clearTemporaryPatterns(): Promise<void> {
-  const { patterns = [] } = await getLocalStorage(['patterns']);
-  const permanentPatterns = patterns.filter(p => !p.temporary);
-  await setLocalStorage({ patterns: permanentPatterns });
-}
-
-/**
- * Reset daily data
- */
-export async function resetDailyData(): Promise<void> {
+export async function resetFocusSession(): Promise<void> {
   await setLocalStorage({
     dailyGoal: undefined,
+    focusEnabled: true,
   });
-  await clearTemporaryPatterns();
-
-  // Lock the browser until new goal is set
-  const { settings } = await getSyncStorage();
-  settings.isLocked = true;
-  await setSyncStorage({ settings });
 }

@@ -9,7 +9,6 @@ export interface Pattern {
   id: string;
   pattern: string;
   enabled: boolean;
-  temporary?: boolean; // expires at day end
   addedAt: number;
 }
 
@@ -44,12 +43,12 @@ export type MessageType =
   | 'OVERRIDE_BLOCK'
   | 'GET_PATTERNS'
   | 'UPDATE_SETTINGS'
-  | 'RESET_DAY'
+  | 'RESET_SESSION'
   | 'ADD_TO_WHITELIST'
   // Broadcast messages (background -> content scripts)
   | 'GOAL_SET'
   | 'GOAL_COMPLETED'
-  | 'DAILY_RESET'
+  | 'SESSION_RESET'
   | 'FOCUS_TOGGLED';
 
 export interface Message<T = any> {
@@ -71,7 +70,6 @@ export interface CheckUrlResponse {
 
 export interface AddPatternPayload {
   pattern: string;
-  temporary?: boolean;
 }
 
 export interface StatusResponse {

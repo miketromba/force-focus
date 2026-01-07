@@ -5,7 +5,7 @@ import {
   setLocalStorage,
   getSyncStorage,
   setSyncStorage,
-  resetDailyData,
+  resetFocusSession,
 } from '@/shared/storage';
 import { isUrlAllowed } from '@/shared/patterns';
 import type {
@@ -39,19 +39,8 @@ const messageHandler = createMessageHandler({
   CHECK_URL: async (payload: CheckUrlPayload): Promise<CheckUrlResponse> => {
     const { url } = payload;
     const { dailyGoal, patterns = [], focusEnabled = false } = await getLocalStorage(['dailyGoal', 'patterns', 'focusEnabled']);
-    const { settings } = await getSyncStorage();
 
-    // If browser is locked (no goal set), block everything - check this FIRST
-    if (settings.isLocked || !dailyGoal) {
-      return {
-        allowed: false,
-        reason: 'No focus goal set for today',
-        isLocked: true,
-        goal: undefined,
-      };
-    }
-
-    // If focus mode is disabled (and goal is set), allow everything
+    // If focus mode is disabled, allow everything - no overlay at all
     if (!focusEnabled) {
       return {
         allowed: true,
@@ -61,7 +50,17 @@ const messageHandler = createMessageHandler({
       };
     }
 
-    // Check if URL matches any pattern
+    // Focus mode is enabled - check if goal is set
+    if (!dailyGoal) {
+      return {
+        allowed: false,
+        reason: 'No focus goal set for today',
+        isLocked: true,
+        goal: undefined,
+      };
+    }
+
+    // Focus mode enabled with goal set - check URL against whitelist
     const allowed = isUrlAllowed(url, patterns);
 
     return {
@@ -73,7 +72,7 @@ const messageHandler = createMessageHandler({
   },
 
   ADD_PATTERN: async (payload: AddPatternPayload): Promise<void> => {
-    const { pattern, temporary = false } = payload;
+    const { pattern } = payload;
     const { patterns = [] } = await getLocalStorage(['patterns']);
 
     // Check for duplicate pattern
@@ -86,7 +85,6 @@ const messageHandler = createMessageHandler({
       id: `pattern-${Date.now()}`,
       pattern,
       enabled: true,
-      temporary,
       addedAt: Date.now(),
     };
 
@@ -147,16 +145,11 @@ const messageHandler = createMessageHandler({
     settings.isLocked = false;
     await setSyncStorage({ settings });
 
-    // Notify all tabs that goal is set (this will trigger re-check)
+    // Notify all tabs to re-check their blocked status
     const tabs = await chrome.tabs.query({});
     tabs.forEach(tab => {
       if (tab.id) {
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'GOAL_SET',
-          payload: goalText,
-        }).catch(() => {
-          // Ignore errors for tabs that don't have content script
-        });
+        chrome.tabs.sendMessage(tab.id, { type: 'GOAL_SET', payload: goalText }).catch(() => {});
       }
     });
   },
@@ -215,8 +208,16 @@ const messageHandler = createMessageHandler({
     }
   },
 
-  RESET_DAY: async (): Promise<void> => {
-    await resetDailyData();
+  RESET_SESSION: async (): Promise<void> => {
+    await resetFocusSession();
+
+    // Reload all tabs to reflect the reset state
+    const tabs = await chrome.tabs.query({});
+    tabs.forEach(tab => {
+      if (tab.id && tab.url && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://')) {
+        chrome.tabs.reload(tab.id).catch(() => {});
+      }
+    });
   },
 
   ADD_TO_WHITELIST: async (payload: { url: string; option: 'exact' | 'domain' | 'domain-wildcard' | 'custom'; customPattern?: string }): Promise<void> => {
@@ -259,7 +260,6 @@ const messageHandler = createMessageHandler({
       id: `pattern-${Date.now()}`,
       pattern,
       enabled: true,
-      temporary: false,
       addedAt: Date.now(),
     };
     patterns.push(newPattern);

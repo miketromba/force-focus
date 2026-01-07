@@ -73,11 +73,36 @@ function showOverlay(goal?: string, isLocked: boolean = false): void {
   document.addEventListener('keyup', blockKeyboardEvent, { capture: true });
   document.addEventListener('keypress', blockKeyboardEvent, { capture: true });
 
+  // Block clipboard events (paste, copy, cut) from reaching the underlying page
+  const blockClipboardEvent = (e: ClipboardEvent) => {
+    if (!document.contains(container)) return;
+
+    const path = e.composedPath();
+    const isWithinOverlay = path.some(el => el === container);
+
+    if (isWithinOverlay) {
+      // Allow clipboard events within our overlay, just stop propagation
+      e.stopPropagation();
+    } else {
+      // Block clipboard events from outside our overlay
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
+  };
+
+  document.addEventListener('paste', blockClipboardEvent, { capture: true });
+  document.addEventListener('copy', blockClipboardEvent, { capture: true });
+  document.addEventListener('cut', blockClipboardEvent, { capture: true });
+
   // Store references for cleanup
   (container as any)._keyboardHandlers = {
     keydown: blockKeyboardEvent,
     keyup: blockKeyboardEvent,
     keypress: blockKeyboardEvent,
+    paste: blockClipboardEvent,
+    copy: blockClipboardEvent,
+    cut: blockClipboardEvent,
   };
 
   // Block scroll events on the backdrop
@@ -186,12 +211,15 @@ function showOverlay(goal?: string, isLocked: boolean = false): void {
 function hideOverlay(): void {
   const container = document.getElementById('force-focus-overlay-root');
   if (container) {
-    // Remove keyboard event listeners from document
+    // Remove keyboard and clipboard event listeners from document
     const keyboardHandlers = (container as any)._keyboardHandlers;
     if (keyboardHandlers) {
       document.removeEventListener('keydown', keyboardHandlers.keydown, { capture: true } as any);
       document.removeEventListener('keyup', keyboardHandlers.keyup, { capture: true } as any);
       document.removeEventListener('keypress', keyboardHandlers.keypress, { capture: true } as any);
+      document.removeEventListener('paste', keyboardHandlers.paste, { capture: true } as any);
+      document.removeEventListener('copy', keyboardHandlers.copy, { capture: true } as any);
+      document.removeEventListener('cut', keyboardHandlers.cut, { capture: true } as any);
     }
 
     // Remove body scroll blocking event listeners
@@ -238,15 +266,15 @@ async function init(): Promise<void> {
 onMessage((message) => {
   switch (message.type) {
     case 'GOAL_SET':
-      // Reload page to check if it's now allowed
-      window.location.reload();
+      // Re-check URL status and update overlay accordingly
+      init();
       break;
     case 'GOAL_COMPLETED':
       // Hide overlay if shown
       hideOverlay();
       break;
-    case 'DAILY_RESET':
-      // Show overlay since browser is now locked
+    case 'SESSION_RESET':
+      // Show overlay since focus session was reset
       showOverlay(undefined, true);
       break;
     case 'FOCUS_TOGGLED':

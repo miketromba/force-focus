@@ -1,5 +1,5 @@
 import { ALARMS } from '@/shared/constants';
-import { getSyncStorage, resetDailyData } from '@/shared/storage';
+import { getSyncStorage, resetFocusSession } from '@/shared/storage';
 
 /**
  * Setup alarms for daily reset
@@ -50,15 +50,15 @@ export async function handleAlarm(alarm: chrome.alarms.Alarm): Promise<void> {
 async function handleDailyReset(): Promise<void> {
   console.log('Performing daily reset...');
 
-  // Reset daily data
-  await resetDailyData();
+  // Reset focus session
+  await resetFocusSession();
 
   // Notify all tabs about the reset
   const tabs = await chrome.tabs.query({});
   tabs.forEach(tab => {
     if (tab.id) {
       chrome.tabs.sendMessage(tab.id, {
-        type: 'DAILY_RESET',
+        type: 'SESSION_RESET',
       }).catch(() => {
         // Ignore errors for tabs that don't have content script
       });
@@ -69,7 +69,7 @@ async function handleDailyReset(): Promise<void> {
   chrome.notifications.create('daily-reset', {
     type: 'basic',
     iconUrl: '/icons/icon-48.png',
-    title: 'Force Focus - Daily Reset',
+    title: 'Force Focus - New Day',
     message: 'Time to set your focus goal for today!',
     priority: 2,
   });

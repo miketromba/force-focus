@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getSyncStorage, setSyncStorage, getLocalStorage, setLocalStorage } from '@/shared/storage';
+import { getSyncStorage, setSyncStorage, getLocalStorage, setLocalStorage, initializeStorage } from '@/shared/storage';
 import { sendMessage } from '@/shared/messages';
 import type { Settings as SettingsType, Pattern } from '@/shared/types';
 
@@ -117,18 +117,22 @@ const Settings: React.FC<SettingsProps> = ({ isFocusActive }) => {
     setCopied(false);
   };
 
-  const handleResetDay = async () => {
-    if (confirm('End your current focus session? Your browser will be locked until you set a new goal.')) {
-      await sendMessage('RESET_DAY');
-      window.close();
-    }
-  };
-
   const handleClearAllData = async () => {
     if (confirm('Reset extension completely? This will remove all your patterns, settings, and goals. This cannot be undone.')) {
       await chrome.storage.local.clear();
       await chrome.storage.sync.clear();
-      alert('Extension reset. Please reload the extension.');
+
+      // Reinitialize with defaults (focus mode enabled)
+      await initializeStorage();
+
+      // Reload all tabs
+      const tabs = await chrome.tabs.query({});
+      tabs.forEach(tab => {
+        if (tab.id && tab.url && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://')) {
+          chrome.tabs.reload(tab.id).catch(() => {});
+        }
+      });
+
       window.close();
     }
   };
