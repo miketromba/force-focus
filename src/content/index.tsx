@@ -47,6 +47,26 @@ function showOverlay(goal?: string, isLocked: boolean = false): void {
   // Clear any existing content
   shadowRoot.innerHTML = '';
 
+  // Pause all video and audio elements to stop background playback
+  const pauseAllMedia = () => {
+    document.querySelectorAll('video, audio').forEach((media) => {
+      const el = media as HTMLMediaElement;
+      if (!el.paused) el.pause();
+    });
+  };
+  pauseAllMedia();
+
+  // Block any media that tries to play while overlay is active
+  const blockMediaPlay = (e: Event) => {
+    if (!document.contains(container)) return;
+    const el = e.target as HTMLMediaElement;
+    if (el && typeof el.pause === 'function') {
+      el.pause();
+    }
+  };
+  document.addEventListener('play', blockMediaPlay, { capture: true });
+  (container as any)._blockMediaPlay = blockMediaPlay;
+
   // Block keyboard events at the document level to prevent page shortcuts
   // (like GitHub's 's' for search) from firing while our overlay is open
   const blockKeyboardEvent = (e: KeyboardEvent) => {
@@ -228,6 +248,12 @@ function hideOverlay(): void {
       document.body.removeEventListener('scroll', blockBodyScroll, { capture: true } as any);
       document.body.removeEventListener('wheel', blockBodyScroll, { capture: true } as any);
       document.body.removeEventListener('touchmove', blockBodyScroll, { capture: true } as any);
+    }
+
+    // Remove media play blocker
+    const blockMediaPlay = (container as any)._blockMediaPlay;
+    if (blockMediaPlay) {
+      document.removeEventListener('play', blockMediaPlay, { capture: true } as any);
     }
 
     // Restore original body styles
