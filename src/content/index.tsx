@@ -164,10 +164,6 @@ function showOverlay(goal?: string, isLocked: boolean = false): void {
       blockedUrl={window.location.href}
       goal={goal}
       isLocked={isLocked}
-      onGoBack={() => {
-        hideOverlay();
-        window.history.back();
-      }}
       onAddToWhitelist={async (option, customPattern) => {
         await sendMessage('ADD_TO_WHITELIST', {
           url: window.location.href,

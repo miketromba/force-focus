@@ -20,7 +20,6 @@ interface BlockingOverlayProps {
   blockedUrl: string;
   goal?: string;
   isLocked?: boolean;
-  onGoBack: () => void;
   onAddToWhitelist: (option: 'exact' | 'domain' | 'domain-wildcard' | 'custom', customPattern?: string) => Promise<void>;
   onSetGoal?: (goal: string) => Promise<void>;
 }
@@ -36,7 +35,6 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
   blockedUrl,
   goal,
   isLocked = false,
-  onGoBack,
   onAddToWhitelist,
   onSetGoal,
 }) => {
@@ -179,13 +177,6 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
               >
                 Set Focus Goal & Unlock
               </button>
-              <button
-                onClick={onGoBack}
-                className="btn btn-secondary"
-                disabled={isLoading}
-              >
-                Go back
-              </button>
             </div>
 
             {isLoading && (
@@ -274,22 +265,12 @@ const BlockingOverlay: React.FC<BlockingOverlayProps> = ({
 
           <div className="overlay-actions">
             <button
-              onClick={onGoBack}
+              onClick={() => setShowWhitelistOptions(true)}
               className="btn btn-primary"
               disabled={isLoading}
             >
-              Back to work
+              Allow in focus mode
             </button>
-
-            <div className="secondary-actions">
-              <button
-                onClick={() => setShowWhitelistOptions(true)}
-                className="btn btn-ghost"
-                disabled={isLoading}
-              >
-                Allow in focus mode
-              </button>
-            </div>
           </div>
 
           {isLoading && (

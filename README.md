@@ -14,7 +14,7 @@ A Chrome extension that enforces deep work by blocking websites until you set a 
 - **Focus Mode Toggle** - Enable/disable blocking with a simple toggle
 - **Goal-Based Locking** - Must set a specific goal before focus mode activates
 - **Pattern-Based Whitelist** - Allow sites using glob patterns with wildcards (`*`, `**`)
-- **Blocking Overlay** - Full-screen modal on blocked sites with options to go back, allow the site, or end session
+- **Blocking Overlay** - Full-screen modal on blocked sites with option to allow the site
 - **Daily Auto-Reset** - Configurable reset time clears your goal daily
 - **Export/Import** - Backup and sync your configuration across devices
 
@@ -46,7 +46,7 @@ Load in Chrome:
 When you visit a blocked site, the overlay shows:
 - Your current focus goal
 - The blocked URL
-- Options: **Back to work**, **Allow in focus mode**, **End focus session**
+- Option to **Allow in focus mode**
 
 The "Allow in focus mode" option lets you quickly add the site with different pattern scopes (exact page, whole domain, subdomains, or path prefix).
 
