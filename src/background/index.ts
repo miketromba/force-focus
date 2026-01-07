@@ -41,23 +41,23 @@ const messageHandler = createMessageHandler({
     const { dailyGoal, patterns = [], focusEnabled = false } = await getLocalStorage(['dailyGoal', 'patterns', 'focusEnabled']);
     const { settings } = await getSyncStorage();
 
-    // If focus mode is disabled, allow everything
-    if (!focusEnabled) {
-      return {
-        allowed: true,
-        reason: 'Focus mode is disabled',
-        isLocked: false,
-        goal: dailyGoal?.text,
-      };
-    }
-
-    // If browser is locked (no goal set), block everything
+    // If browser is locked (no goal set), block everything - check this FIRST
     if (settings.isLocked || !dailyGoal) {
       return {
         allowed: false,
         reason: 'No focus goal set for today',
         isLocked: true,
         goal: undefined,
+      };
+    }
+
+    // If focus mode is disabled (and goal is set), allow everything
+    if (!focusEnabled) {
+      return {
+        allowed: true,
+        reason: 'Focus mode is disabled',
+        isLocked: false,
+        goal: dailyGoal?.text,
       };
     }
 
